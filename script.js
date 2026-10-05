@@ -4,7 +4,7 @@ let counterSteps = 0;
 let counterOpenedCards = 0;
 let oneOpenedCard = null;
 let twoOpenedCard = null;
-let leaders = [];
+let leaders = JSON.parse(localStorage.getItem("leaders")) || [];
 
 const cards = [
   {
@@ -75,6 +75,7 @@ function startNewGame() {
   modal.classList.remove("modal--opened");
   scorer.textContent = `Scorer: ${counterSteps}`;
   scorerPair.textContent = `Number of pairs: ${counterOpenedCards}`;
+  
 
   shuffleArray([...cards, ...cards]).forEach((card) => {
     const listItem = getElement("li", ["card-item"]);
@@ -113,7 +114,6 @@ function openCard(event) {
     if (counter === 2) {
       list.disabled = true;
       twoOpenedCard = target.parentElement.dataset.title;
-
       equalCards();
       timer();
       if (
@@ -175,14 +175,14 @@ function yourWin() {
   });
   const newGameBtn = getElement("button", ["btn", "modal__new-game-btn"]);
   newGameBtn.textContent = "new game";
+  modalContent.append(message, closeModalBtn, newGameBtn);
+  modal.append(modalContent);
+  saveStorage();
   newGameBtn.addEventListener("click", () => {
     modal.classList.remove("modal--opened");
     modalContent.remove();
     startNewGame();
   });
-  modalContent.append(message, closeModalBtn, newGameBtn);
-  modal.append(modalContent);
-  saveStorage();
 }
 
 window.addEventListener("keydown", (event) => {
@@ -202,22 +202,21 @@ modal.addEventListener("click", (evt) => {
 leaderBtn.addEventListener("click", showLeaderTable);
 
 function showLeaderTable() {
-  leaders = JSON.parse(localStorage.getItem("leaders"));
-  console.log(leaders);
   modal.classList.add("modal--opened");
   const modalContent = getElement("div", ["modal__content-leader"]);
   const closeBtn = getElement("button", ["btn", "modal__leader-btn"]);
   closeBtn.textContent = "close";
   modalContent.append(closeBtn);
+  leaders = JSON.parse(localStorage.getItem("leaders"))
+  
 
-  if (Boolean(counterSteps) && Boolean(leaders.length)) {
+  if (Boolean(leaders.length)) {
     const leaderList = getElement("ul", ["modal__leader-list"]);
-
+    
     leaders
       .toSorted((prev, next) => prev.counterSteps - next.counterSteps)
       .slice(0, 10)
       .forEach((leader, index) => {
-        console.log(leader)
         const leaderItem = getElement("li", ["modal__leader-item"]);
         leaderItem.textContent = `${index + 1}. Moves: ${leader.counterSteps}, Date: ${leader.date}`;
         leaderList.append(leaderItem);
@@ -247,5 +246,4 @@ function saveStorage() {
     }),
   });
   localStorage.setItem("leaders", JSON.stringify(leaders));
-  console.log(leaders);
 }

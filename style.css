@@ -127,7 +127,9 @@ body {
   display: flex;
 }
 
-.modal__message {
+.modal__message,
+.leader-text,
+.modal__leader-item {
   color: #3e3e23;
   font-size: 34px;
   font-weight: bold;
@@ -161,4 +163,9 @@ body {
   border-radius: 10px;
   background-color: #cca7a7;
 }
-  
+
+
+.modal__leader-item {
+  margin-bottom: 15px;
+  border-bottom: 2px solid #640808;
+}
