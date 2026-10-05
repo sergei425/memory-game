@@ -1,7 +1,10 @@
 const body = document.body;
 let counter = 0;
+let counterSteps = 0;
+let counterOpenedCards = 0;
 let oneOpenedCard = null;
 let twoOpenedCard = null;
+let leaders = [];
 
 const cards = [
   {
@@ -48,18 +51,30 @@ function getElement(tagName, className = []) {
 
 const header = getElement("header", ["header"]);
 const list = getElement("ul", ["card-list"]);
+const modal = getElement("div", ["modal"]);
+const main = getElement("main", ["main"]);
 
-body.prepend(header, list);
+body.prepend(header, main, modal);
 
-const closeBtn = getElement("button", ["header__close-btn"]);
+const scorer = getElement("p", ["main__counter"]);
+const scorerPair = getElement("p", ["main__counter-pair"]);
+
+main.append(scorer, scorerPair, list);
+
+const closeBtn = getElement("button", ["btn", "header__close-btn"]);
 closeBtn.textContent = "new game";
-const leaderBtn = getElement("button", ["header__leader-btn"]);
+const leaderBtn = getElement("button", ["btn", "header__leader-btn"]);
 leaderBtn.textContent = "leader table";
 header.append(closeBtn, leaderBtn);
 
 function startNewGame() {
   [...list.children].forEach((item) => item.remove());
   counter = 0;
+  counterSteps = 0;
+  counterOpenedCards = 0;
+  modal.classList.remove("modal--opened");
+  scorer.textContent = `Scorer: ${counterSteps}`;
+  scorerPair.textContent = `Number of pairs: ${counterOpenedCards}`;
 
   shuffleArray([...cards, ...cards]).forEach((card) => {
     const listItem = getElement("li", ["card-item"]);
@@ -73,7 +88,9 @@ function startNewGame() {
     list.append(listItem);
   });
 }
-startNewGame()
+
+startNewGame();
+
 function shuffleArray(array) {
   return array
     .map((value) => ({ value, sort: Math.random() }))
@@ -88,23 +105,42 @@ function openCard(event) {
   if (target.classList.contains("card-item--front") && counter < 2) {
     target.parentElement.classList.add("card-item--flipped");
     counter++;
+    counterSteps++;
+    scorer.textContent = `Scorer: ${counterSteps}`;
     if (counter === 1) {
       oneOpenedCard = target.parentElement.dataset.title;
     }
     if (counter === 2) {
       list.disabled = true;
       twoOpenedCard = target.parentElement.dataset.title;
-      if (oneOpenedCard === twoOpenedCard) {
-        [...list.children].forEach((item) => {
-          if (item.dataset.title === oneOpenedCard) {
-            item.classList.add("card-item--opened");
-          }
-        });
-        oneOpenedCard = null;
-        twoOpenedCard = null;
-      }
+
+      equalCards();
       timer();
+      if (
+        [...list.children].every((item) =>
+          item.classList.contains("card-item--opened"),
+        )
+      ) {
+        let winTimeout = setTimeout(() => {
+          yourWin();
+          clearTimeout(winTimeout);
+        }, 1000);
+      }
     }
+  }
+}
+
+function equalCards() {
+  if (oneOpenedCard === twoOpenedCard) {
+    [...list.children].forEach((item) => {
+      if (item.dataset.title === oneOpenedCard) {
+        item.classList.add("card-item--opened");
+      }
+    });
+    oneOpenedCard = null;
+    twoOpenedCard = null;
+    counterOpenedCards++;
+    scorerPair.textContent = `Number of pairs: ${counterOpenedCards}`;
   }
 }
 
@@ -115,7 +151,7 @@ function timer() {
     );
     counter = 0;
     list.disabled = false;
-  }, 2500);
+  }, 2000);
   if (oneOpenedCard === twoOpenedCard) {
     clearTimeout(timerId);
     counter = 0;
@@ -124,3 +160,92 @@ function timer() {
 }
 
 closeBtn.addEventListener("click", startNewGame);
+
+function yourWin() {
+  list.disabled = true;
+  modal.classList.add("modal--opened");
+  const modalContent = getElement("div", ["modal__content"]);
+  const message = getElement("p", ["modal__message"]);
+  message.textContent = `You won, number of moves ${counterSteps}`;
+  const closeModalBtn = getElement("button", ["btn", "modal__close-btn"]);
+  closeModalBtn.textContent = "close";
+  closeModalBtn.addEventListener("click", () => {
+    modal.classList.remove("modal--opened");
+    modalContent.remove();
+  });
+  const newGameBtn = getElement("button", ["btn", "modal__new-game-btn"]);
+  newGameBtn.textContent = "new game";
+  newGameBtn.addEventListener("click", () => {
+    modal.classList.remove("modal--opened");
+    modalContent.remove();
+    startNewGame();
+  });
+  modalContent.append(message, closeModalBtn, newGameBtn);
+  modal.append(modalContent);
+  saveStorage();
+}
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && modal.classList.contains("modal--opened")) {
+    modal.classList.remove("modal--opened");
+    [...modal.children].forEach((item) => item.remove());
+  }
+});
+
+modal.addEventListener("click", (evt) => {
+  if (modal.classList.contains("modal--opened") && evt.target === modal) {
+    modal.classList.remove("modal--opened");
+    [...modal.children].forEach((item) => item.remove());
+  }
+});
+
+leaderBtn.addEventListener("click", showLeaderTable);
+
+function showLeaderTable() {
+  leaders = JSON.parse(localStorage.getItem("leaders"));
+  console.log(leaders);
+  modal.classList.add("modal--opened");
+  const modalContent = getElement("div", ["modal__content-leader"]);
+  const closeBtn = getElement("button", ["btn", "modal__leader-btn"]);
+  closeBtn.textContent = "close";
+  modalContent.append(closeBtn);
+
+  if (Boolean(counterSteps) && Boolean(leaders.length)) {
+    const leaderList = getElement("ul", ["modal__leader-list"]);
+
+    leaders
+      .toSorted((prev, next) => prev.counterSteps - next.counterSteps)
+      .slice(0, 10)
+      .forEach((leader, index) => {
+        console.log(leader)
+        const leaderItem = getElement("li", ["modal__leader-item"]);
+        leaderItem.textContent = `${index + 1}. Moves: ${leader.counterSteps}, Date: ${leader.date}`;
+        leaderList.append(leaderItem);
+      });
+
+    modalContent.prepend(leaderList);
+  } else {
+    const message = getElement("p", ["leader-text"]);
+    message.textContent = "No results yet.";
+    modalContent.prepend(message);
+  }
+
+  modal.append(modalContent);
+  closeBtn.addEventListener("click", () => {
+    modal.classList.remove("modal--opened");
+    modalContent.remove();
+  });
+}
+
+function saveStorage() {
+  leaders.push({
+    counterSteps,
+    date: new Date().toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }),
+  });
+  localStorage.setItem("leaders", JSON.stringify(leaders));
+  console.log(leaders);
+}

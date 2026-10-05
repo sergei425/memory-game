@@ -20,30 +20,38 @@ body {
   gap: 40px;
   width: 100%;
   max-width: 960px;
-  padding: 20px;
+  padding-top: 20px;
 }
 
-.header button {
-  padding: 10px 20px;
-  border: 2px solid #640808;
+.btn {
+  padding: 14px 20px;
+  border: 3px solid #640808;
   border-radius: 5px;
   background-color: transparent;
   color: #640808;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.5s ease, color 0.5s ease;
 
   &:hover {
     background-color: #640808;
-    color: #fff;
+    color: #a4a403;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
+}
+
+.main__counter,
+.main__counter-pair {
+  font-size: 30px;
+  color: #640808;
+  text-shadow: 2px 2px 2px rgba(100, 8, 8, 0.5);
 }
 
 .card-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  padding: 20px;
 }
 
 .card-item {
@@ -99,3 +107,58 @@ body {
 .card-item--opened .card-item--back {
   transform: rotateX(0deg);
 }
+
+.modal {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(20, 19, 17, 0.9);
+  z-index: 22;
+}
+
+.modal--opened {
+  display: flex;
+}
+
+.modal__message {
+  color: #3e3e23;
+  font-size: 34px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 4px rgba(84, 84, 27, 0.5);
+}
+
+.modal__content,
+.modal__content-leader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #cca7a7;
+}
+
+.modal__close-btn,
+.modal__new-game-btn {
+  background-color: #640808;
+  color: #a4a403;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.modal__leader-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #cca7a7;
+}
+  
