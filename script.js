@@ -4,7 +4,7 @@ let counterSteps = 0;
 let counterOpenedCards = 0;
 let oneOpenedCard = null;
 let twoOpenedCard = null;
-let leaders = JSON.parse(localStorage.getItem("leaders")) || [];
+let leaders = JSON.parse(localStorage.getItem("leaders")) ?? [];
 
 const cards = [
   {
@@ -107,7 +107,7 @@ function openCard(event) {
     target.parentElement.classList.add("card-item--flipped");
     counter++;
     counterSteps++;
-    scorer.textContent = `Scorer: ${counterSteps}`;
+    scorer.textContent = `Scorer: ${Math.floor(counterSteps / 2)}`;
     if (counter === 1) {
       oneOpenedCard = target.parentElement.dataset.title;
     }
@@ -207,10 +207,11 @@ function showLeaderTable() {
   const closeBtn = getElement("button", ["btn", "modal__leader-btn"]);
   closeBtn.textContent = "close";
   modalContent.append(closeBtn);
-  leaders = JSON.parse(localStorage.getItem("leaders"))
+  leaders = JSON.parse(localStorage.getItem("leaders")) ?? []
   
-
-  if (Boolean(leaders.length)) {
+  
+  
+  if (leaders.length) {
     const leaderList = getElement("ul", ["modal__leader-list"]);
     
     leaders
@@ -218,7 +219,7 @@ function showLeaderTable() {
       .slice(0, 10)
       .forEach((leader, index) => {
         const leaderItem = getElement("li", ["modal__leader-item"]);
-        leaderItem.textContent = `${index + 1}. Moves: ${leader.counterSteps}, Date: ${leader.date}`;
+        leaderItem.textContent = `${index + 1}. Moves: ${leader.counterSteps / 2}, Date: ${leader.date}`;
         leaderList.append(leaderItem);
       });
 
