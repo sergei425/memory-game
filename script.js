@@ -162,6 +162,7 @@ function timer() {
 closeBtn.addEventListener("click", startNewGame);
 
 function yourWin() {
+  document.body.style.overflow = 'hidden';
   list.disabled = true;
   modal.classList.add("modal--opened");
   const modalContent = getElement("div", ["modal__content"]);
@@ -182,6 +183,7 @@ function yourWin() {
     modal.classList.remove("modal--opened");
     modalContent.remove();
     startNewGame();
+    document.body.style.overflow = '';
   });
 }
 
@@ -190,6 +192,7 @@ window.addEventListener("keydown", (event) => {
     modal.classList.remove("modal--opened");
     [...modal.children].forEach((item) => item.remove());
   }
+  document.body.style.overflow = '';
 });
 
 modal.addEventListener("click", (evt) => {
@@ -197,11 +200,13 @@ modal.addEventListener("click", (evt) => {
     modal.classList.remove("modal--opened");
     [...modal.children].forEach((item) => item.remove());
   }
+  document.body.style.overflow = '';
 });
 
 leaderBtn.addEventListener("click", showLeaderTable);
 
 function showLeaderTable() {
+  document.body.style.overflow = 'hidden';
   modal.classList.add("modal--opened");
   const modalContent = getElement("div", ["modal__content-leader"]);
   const closeBtn = getElement("button", ["btn", "modal__leader-btn"]);
@@ -234,6 +239,7 @@ function showLeaderTable() {
   closeBtn.addEventListener("click", () => {
     modal.classList.remove("modal--opened");
     modalContent.remove();
+    document.body.style.overflow = '';
   });
 }
 
