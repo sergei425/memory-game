@@ -166,7 +166,7 @@ function yourWin() {
   modal.classList.add("modal--opened");
   const modalContent = getElement("div", ["modal__content"]);
   const message = getElement("p", ["modal__message"]);
-  message.textContent = `You won, number of moves ${counterSteps}`;
+  message.textContent = `You won, number of moves ${counterSteps / 2}`;
   const closeModalBtn = getElement("button", ["btn", "modal__close-btn"]);
   closeModalBtn.textContent = "close";
   closeModalBtn.addEventListener("click", () => {
