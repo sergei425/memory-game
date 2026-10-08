@@ -1,0 +1,171 @@
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #a4a403;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 960px;
+  padding-top: 20px;
+}
+
+.btn {
+  padding: 14px 20px;
+  border: 3px solid #640808;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #640808;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.5s ease, color 0.5s ease;
+
+  &:hover {
+    background-color: #640808;
+    color: #a4a403;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+}
+
+.main__counter,
+.main__counter-pair {
+  font-size: 30px;
+  color: #640808;
+  text-shadow: 2px 2px 2px rgba(100, 8, 8, 0.5);
+}
+
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.card-item {
+  position: relative;
+  width: 240px;
+  height: 180px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  perspective: 600px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+.card-item .card-item--front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  background: url("./images/lucky-38.jpg") no-repeat center;
+  background-size: 100% 100%;
+  transform: rotateX(0deg);
+  transition: 0.5s;
+  backface-visibility: hidden;
+}
+
+.card-item--flipped .card-item--front {
+  transform: rotateX(-180deg);
+}
+
+.card-item .card-item--back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: no-repeat center;
+  background-size: 100% 100%;
+  transform: rotateX(180deg);
+  transition: 0.5s;
+  backface-visibility: hidden;
+}
+
+.card-item--flipped .card-item--back {
+  transform: rotateX(0deg);
+}
+
+.card-item--opened .card-item--front {
+  transform: rotateX(180deg);
+}
+
+.card-item--opened .card-item--back {
+  transform: rotateX(0deg);
+}
+
+.modal {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(20, 19, 17, 0.9);
+  z-index: 22;
+}
+
+.modal--opened {
+  display: flex;
+}
+
+.modal__message,
+.leader-text,
+.modal__leader-item {
+  color: #3e3e23;
+  font-size: 34px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 4px rgba(84, 84, 27, 0.5);
+}
+
+.modal__content,
+.modal__content-leader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #cca7a7;
+}
+
+.modal__close-btn,
+.modal__new-game-btn {
+  background-color: #640808;
+  color: #a4a403;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.modal__leader-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #cca7a7;
+}
+
+
+.modal__leader-item {
+  margin-bottom: 15px;
+  border-bottom: 2px solid #640808;
+}
